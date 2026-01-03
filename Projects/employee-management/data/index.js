@@ -42,4 +42,4 @@ const employeedata = [
     }
 ]
 export default employeedata
-export default employeedata
+
