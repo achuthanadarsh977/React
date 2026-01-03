@@ -1,10 +1,11 @@
-import React , {useState , useRef , useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import Swal from 'sweetalert2';
 
+function Add({ employees, setEmployees, setIsAdding }) {
 
-function Add(){
-   
-      const [name, setName] = useState('');
-    const [lastName, setLastName] = useState('');
+    const [name, setName] = useState('');
+    const [gender, setGender] = useState('');
+    const [bloodgroup, setBloodgroup] = useState('');
     const [email, setEmail] = useState('');
     const [salary, setSalary] = useState('');
     const [date, setDate] = useState('');
@@ -13,94 +14,96 @@ function Add(){
 
     useEffect(() => {
         textInput.current.focus();
-    }, [])
+    }, []);
 
-    const handleAdd = e => {
+    const handleAdd = (e) => {
         e.preventDefault();
-        if (!firstName || !lastName || !email || !salary || !date) {
+
+        if (!name || !gender || !bloodgroup || !email || !salary || !date) {
             return Swal.fire({
                 icon: 'error',
                 title: 'Error!',
                 text: 'All fields are required.',
-                showConfirmButton: true
             });
         }
 
-        const id = employees.length + 1;
         const newEmployee = {
-            id,
-            firstName,
-            lastName,
+            id: employees.length + 1,
+            name,
+            gender,
+            bloodgroup,
             email,
-            salary,
+            salary: Number(salary),
             date
-        }
-        employees.push(newEmployee);
-        setEmployees(employees);
+        };
+
+        setEmployees([...employees, newEmployee]);
         setIsAdding(false);
 
         Swal.fire({
             icon: 'success',
             title: 'Added!',
-            text: `${firstName} ${lastName}'s data has been Added.`,
-            showConfirmButton: false,
-            timer: 1500
+            text: `${name}'s data has been added.`,
+            timer: 1500,
+            showConfirmButton: false
         });
-    }
-
+    };
 
     return (
         <div className="small-container">
             <form onSubmit={handleAdd}>
                 <h1>Add Employee</h1>
-                <label htmlFor="name">First Name</label>
+
+                <label>Name</label>
                 <input
-                    id="name"
                     type="text"
                     ref={textInput}
-                    name="name"
                     value={name}
                     onChange={e => setName(e.target.value)}
                 />
-                <label htmlFor="lastName">Last Name</label>
+
+                <label>Gender</label>
                 <input
-                    id="lastName"
                     type="text"
-                    name="lastName"
-                    value={lastName}
-                    onChange={e => setLastName(e.target.value)}
+                    value={gender}
+                    onChange={e => setGender(e.target.value)}
                 />
-                <label htmlFor="email">Email</label>
+
+                <label>Blood Group</label>
                 <input
-                    id="email"
+                    type="text"
+                    value={bloodgroup}
+                    onChange={e => setBloodgroup(e.target.value)}
+                />
+
+                <label>Email</label>
+                <input
                     type="email"
-                    name="email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                 />
-                <label htmlFor="salary">Salary ($)</label>
+
+                <label>Salary ($)</label>
                 <input
-                    id="salary"
                     type="number"
-                    name="salary"
                     value={salary}
                     onChange={e => setSalary(e.target.value)}
                 />
-                <label htmlFor="date">Date</label>
+
+                <label>Date</label>
                 <input
-                    id="date"
                     type="date"
-                    name="date"
                     value={date}
                     onChange={e => setDate(e.target.value)}
                 />
+
                 <div style={{ marginTop: '30px' }}>
                     <input type="submit" value="Add" />
                     <input
-                        style={{ marginLeft: '12px' }}
-                        className="muted-button"
                         type="button"
                         value="Cancel"
+                        className="muted-button"
+                        style={{ marginLeft: '12px' }}
                         onClick={() => setIsAdding(false)}
                     />
                 </div>
@@ -109,4 +112,4 @@ function Add(){
     );
 }
 
-export default Add
+export default Add;
