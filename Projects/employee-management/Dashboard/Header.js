@@ -1,8 +1,7 @@
 import React from 'react'
 
-import {setIsAdding} from './index'
 
-function Header({setAdding}){
+function Header({setIsAdding}){
     return(
         <header>
             <h1>Employee Management Software</h1>
