@@ -1,7 +1,7 @@
 import React from "react";
 import shipmentData from "../data/logisticsdata";
 
-const List = () => {
+const List = (logistic , handleEdit ,handleDelete) => {
   return (
     <div className="main-content">
       <h1>Shipment List</h1>
@@ -26,6 +26,7 @@ const List = () => {
               <th>Other ₹</th>
               <th>Total Advance ₹</th>
               <th>Balance ₹</th>
+              <th colSpan={2} className="text-center">Actions</th>
             </tr>
           </thead>
 
@@ -49,6 +50,22 @@ const List = () => {
                   <td>{shipment.otherCharges.toLocaleString()}</td>
                   <td>{shipment.totalAdvanceAmount.toLocaleString()}</td>
                   <td>{shipment.balanceAmount.toLocaleString()}</td>
+                  <td className="text-right">
+                                    <button
+                                        onClick={() => handleEdit(logistic.id)}
+                                        className="button muted-button"
+                                    >
+                                        Edit
+                                    </button>
+                                </td>
+                                <td className="text-left">
+                                    <button
+                                        onClick={() => handleDelete(logistic.id)}
+                                        className="button muted-button"
+                                    >
+                                        Delete
+                                    </button>
+                                </td>
                 </tr>
               ))
             ) : (
