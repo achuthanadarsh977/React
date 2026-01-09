@@ -24,6 +24,7 @@ function Add({ employees, setEmployees, setIsAdding }) {
                 icon: 'error',
                 title: 'Error!',
                 text: 'All fields are required.',
+                showConfirmButton: true
             });
         }
 
@@ -44,8 +45,8 @@ function Add({ employees, setEmployees, setIsAdding }) {
             icon: 'success',
             title: 'Added!',
             text: `${name}'s data has been added.`,
-            timer: 1500,
-            showConfirmButton: false
+            showConfirmButton: false,
+            timer: 1500
         });
     };
 
@@ -59,50 +60,56 @@ function Add({ employees, setEmployees, setIsAdding }) {
                     type="text"
                     ref={textInput}
                     value={name}
-                    onChange={e => setName(e.target.value)}
+                    onChange={(e) => setName(e.target.value)}
                 />
 
                 <label>Gender</label>
-                <input
-                    type="text"
-                    value={gender}
-                    onChange={e => setGender(e.target.value)}
-                />
+                <select value={gender} onChange={(e) => setGender(e.target.value)}>
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
 
                 <label>Blood Group</label>
-                <input
-                    type="text"
-                    value={bloodgroup}
-                    onChange={e => setBloodgroup(e.target.value)}
-                />
+                <select value={bloodgroup} onChange={(e) => setBloodgroup(e.target.value)}>
+                    <option value="">Select Blood Group</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                </select>
 
                 <label>Email</label>
                 <input
                     type="email"
                     value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                 />
 
-                <label>Salary ($)</label>
+                <label>Salary</label>
                 <input
                     type="number"
                     value={salary}
-                    onChange={e => setSalary(e.target.value)}
+                    onChange={(e) => setSalary(e.target.value)}
                 />
 
                 <label>Date</label>
                 <input
                     type="date"
                     value={date}
-                    onChange={e => setDate(e.target.value)}
+                    onChange={(e) => setDate(e.target.value)}
                 />
 
                 <div style={{ marginTop: '30px' }}>
                     <input type="submit" value="Add" />
                     <input
                         type="button"
-                        value="Cancel"
                         className="muted-button"
+                        value="Cancel"
                         style={{ marginLeft: '12px' }}
                         onClick={() => setIsAdding(false)}
                     />
