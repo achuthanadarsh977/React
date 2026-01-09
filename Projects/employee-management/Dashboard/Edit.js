@@ -1,36 +1,37 @@
-
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 
-
-function Edit({employees , selectedEmployee , setEmployees , setIsEditing}){
+function Edit({ employees, selectedEmployee, setEmployees, setIsEditing }) {
 
     const id = selectedEmployee.id;
 
     const [name, setName] = useState(selectedEmployee.name);
-    const [email, setEmail] = useState(selectedEmployee.email);
     const [gender, setGender] = useState(selectedEmployee.gender);
-    const [date, setDate] = useState(selectedEmployee.date);
+    const [bloodgroup, setBloodgroup] = useState(selectedEmployee.bloodgroup);
+    const [email, setEmail] = useState(selectedEmployee.email);
     const [salary, setSalary] = useState(selectedEmployee.salary);
+    const [date, setDate] = useState(selectedEmployee.date);
 
     const handleUpdate = (e) => {
         e.preventDefault();
 
-        if (!name || !email || !gender || !date || !salary) {
+        if (!name || !gender || !bloodgroup || !email || !salary || !date) {
             return Swal.fire({
                 icon: 'error',
                 title: 'Error!',
                 text: 'All fields are required.',
+                showConfirmButton: true
             });
         }
 
         const updatedEmployee = {
             id,
             name,
-            email,
             gender,
-            date,
-            salary,
+            bloodgroup,
+            email,
+            salary: Number(salary),
+            date
         };
 
         const updatedEmployees = employees.map(emp =>
@@ -44,8 +45,8 @@ function Edit({employees , selectedEmployee , setEmployees , setIsEditing}){
             icon: 'success',
             title: 'Updated!',
             text: `${name}'s data has been updated.`,
-            timer: 1500,
-            showConfirmButton: false
+            showConfirmButton: false,
+            timer: 1500
         });
     };
 
@@ -58,47 +59,59 @@ function Edit({employees , selectedEmployee , setEmployees , setIsEditing}){
                 <input
                     type="text"
                     value={name}
-                    onChange={e => setName(e.target.value)}
+                    onChange={(e) => setName(e.target.value)}
                 />
+
+                <label>Gender</label>
+                <select value={gender} onChange={(e) => setGender(e.target.value)}>
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+
+                <label>Blood Group</label>
+                <select
+                    value={bloodgroup}
+                    onChange={(e) => setBloodgroup(e.target.value)}
+                >
+                    <option value="">Select Blood Group</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                </select>
 
                 <label>Email</label>
                 <input
                     type="email"
                     value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                 />
 
-                <label>Gender</label>
-                <select
-                    value={gender}
-                    onChange={e => setGender(e.target.value)}
-                >
-                    <option value="">Select</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                </select>
+                <label>Salary</label>
+                <input
+                    type="number"
+                    value={salary}
+                    onChange={(e) => setSalary(e.target.value)}
+                />
 
                 <label>Date</label>
                 <input
                     type="date"
                     value={date}
-                    onChange={e => setDate(e.target.value)}
-                />
-
-                <label>Salary ($)</label>
-                <input
-                    type="number"
-                    value={salary}
-                    onChange={e => setSalary(e.target.value)}
+                    onChange={(e) => setDate(e.target.value)}
                 />
 
                 <div style={{ marginTop: '30px' }}>
                     <input type="submit" value="Update" />
                     <input
                         type="button"
-                        value="Cancel"
                         className="muted-button"
+                        value="Cancel"
                         style={{ marginLeft: '12px' }}
                         onClick={() => setIsEditing(false)}
                     />
@@ -106,10 +119,6 @@ function Edit({employees , selectedEmployee , setEmployees , setIsEditing}){
             </form>
         </div>
     );
-
-
-
 }
 
-
-export default Edit
+export default Edit;
