@@ -1,70 +1,71 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 
-import employeedata  from '../../data/';
-import Header from './Header';
-import Add from './Add';
-import Edit from './Edit';
-import List from './List';
+import shipmentData from './../data/logisticsdata';
 
-function DashBoard() {
+import Add from "./Add";
+import Header from "./Header";
+import Edit from "./Edit";
+import List from "./List";
 
-    const [employees, setEmployees] = useState(employeedata);
-    const [selectedEmployee, setSelectedEmployee] = useState(null);
-    const [isAdding, setIsAdding] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
+function Dashboard() {
+  const [shipments, setShipments] = useState(shipmentData);
 
-    const handleEdit = (employee) => {
-        setSelectedEmployee(employee);
-        setIsEditing(true);
-    };
+  const [selectedShipment, setSelectedShipment] = useState(null);
+  const [isAdding, setIsAdding] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-    const handleDelete = (id) => {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Are you sure?',
-            text: 'You will not be able to recover this!',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-        }).then(result => {
-            if (result.isConfirmed) {
-                setEmployees(employees.filter(emp => emp.id !== id));
-                Swal.fire('Deleted!', 'Employee has been deleted.', 'success');
-            }
-        });
-    };
+  const handleEdit = (shipment) => {
+    setSelectedShipment(shipment);
+    setIsEditing(true);
+  };
 
-    return (
-        <div className="container">
-            {!isAdding && !isEditing && (
-                <>
-                    <Header setIsAdding={setIsAdding} />
-                    <List
-                        employees={employees}
-                        handleEdit={handleEdit}
-                        handleDelete={handleDelete}
-                    />
-                </>
-            )}
+  const handleDelete = (id) => {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this',
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+    }).then(result => {
+      if (result.isConfirmed) {
+        setShipments(shipments.filter(sh => sh.id !== id));
+        Swal.fire('Deleted', 'Shipment has been deleted', 'success');
+      }
+    });
+  };
 
-            {isAdding && (
-                <Add
-                    employees={employees}
-                    setEmployees={setEmployees}
-                    setIsAdding={setIsAdding}
-                />
-            )}
+  return (
+    <div className="container">
+      {!isAdding && !isEditing && (
+        <>
+          <Header setIsAdding={setIsAdding} />
+          <List
+            shipments={shipments}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+          />
+        </>
+      )}
 
-            {isEditing && (
-                <Edit
-                    employees={employees}
-                    selectedEmployee={selectedEmployee}
-                    setEmployees={setEmployees}
-                    setIsEditing={setIsEditing}
-                />
-            )}
-        </div>
-    );
+      {isAdding && (
+        <Add
+          shipments={shipments}
+          setShipments={setShipments}
+          setIsAdding={setIsAdding}
+        />
+      )}
+
+      {isEditing && (
+        <Edit
+          shipments={shipments}
+          selectedShipment={selectedShipment}
+          setShipments={setShipments}
+          setIsEditing={setIsEditing}
+        />
+      )}
+    </div>
+  );
 }
 
-export default DashBoard;
+export default Dashboard;
