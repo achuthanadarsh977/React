@@ -1,7 +1,11 @@
 import React from "react";
-import shipmentData from "../data/logisticsdata";
 
-const List = (logistic , handleEdit ,handleDelete) => {
+function List({ shipments, handleEdit, handleDelete }) {
+  const formatter = new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+  });
+
   return (
     <div className="main-content">
       <h1>Shipment List</h1>
@@ -31,8 +35,8 @@ const List = (logistic , handleEdit ,handleDelete) => {
           </thead>
 
           <tbody>
-            {shipmentData.length > 0 ? (
-              shipmentData.map((shipment, index) => (
+            {shipments && shipments.length > 0 ? (
+              shipments.map((shipment, index) => (
                 <tr key={shipment.id}>
                   <td>{index + 1}</td>
                   <td>{shipment.supplierName}</td>
@@ -45,32 +49,32 @@ const List = (logistic , handleEdit ,handleDelete) => {
                   <td>{shipment.loadingDate}</td>
                   <td>{shipment.vehicleNumber}</td>
                   <td>{shipment.vehicleTypeTonnage}</td>
-                  <td>{shipment.freightAmount.toLocaleString()}</td>
-                  <td>{shipment.advanceAmount.toLocaleString()}</td>
-                  <td>{shipment.otherCharges.toLocaleString()}</td>
-                  <td>{shipment.totalAdvanceAmount.toLocaleString()}</td>
-                  <td>{shipment.balanceAmount.toLocaleString()}</td>
+                  <td>{formatter.format(shipment.freightAmount)}</td>
+                  <td>{formatter.format(shipment.advanceAmount)}</td>
+                  <td>{formatter.format(shipment.otherCharges)}</td>
+                  <td>{formatter.format(shipment.totalAdvanceAmount)}</td>
+                  <td>{formatter.format(shipment.balanceAmount)}</td>
                   <td className="text-right">
-                                    <button
-                                        onClick={() => handleEdit(logistic.id)}
-                                        className="button muted-button"
-                                    >
-                                        Edit
-                                    </button>
-                                </td>
-                                <td className="text-left">
-                                    <button
-                                        onClick={() => handleDelete(logistic.id)}
-                                        className="button muted-button"
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
+                    <button
+                      onClick={() => handleEdit(shipment)}
+                      className="button muted-button"
+                    >
+                      Edit
+                    </button>
+                  </td>
+                  <td className="text-left">
+                    <button
+                      onClick={() => handleDelete(shipment.id)}
+                      className="button muted-button"
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="16" className="text-center">
+                <td colSpan="17" className="text-center">
                   No shipment records found
                 </td>
               </tr>
@@ -80,6 +84,6 @@ const List = (logistic , handleEdit ,handleDelete) => {
       </div>
     </div>
   );
-};
+}
 
 export default List;
