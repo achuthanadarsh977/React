@@ -1,53 +1,42 @@
-import React, { useState, useRef, useEffect } from "react";
-import Swal from "sweetalert2";
+import React, { useState, useRef, useEffect } from 'react';
+import Swal from 'sweetalert2';
 
-function Add({ logistics, setlogistics, setIsAdding }) {
-  const [supplierName, setsupplierName] = useState("");
-  const [supplierPan, setsupplierPan] = useState("");
-  const [tripId, settripId] = useState("");
-  const [tripDate, settripDate] = useState("");
-  const [billingTo, setbillingTo] = useState("");
-  const [fromLocation, setfromLocation] = useState("");
-  const [toLocation, settoLocation] = useState("");
-  const [loadingDate, setloadingDate] = useState("");
-  const [vehicleNumber, setvehicleNumber] = useState("");
-  const [vehicleTypeTonnage, setvehicleTypeTonnage] = useState("");
-  const [freightAmount, setfreightAmount] = useState("");
-  const [advanceAmount, setadvanceAmount] = useState("");
-  const [otherCharges, setotherCharges] = useState("");
+function Add({ shipments, setShipments, setIsAdding }) {
+  const [formData, setFormData] = useState({
+    supplierName: '',
+    supplierPan: '',
+    tripId: '',
+    tripDate: '',
+    billingTo: '',
+    fromLocation: '',
+    toLocation: '',
+    loadingDate: '',
+    vehicleNumber: '',
+    vehicleTypeTonnage: '',
+    freightAmount: '',
+    advanceAmount: '',
+    otherCharges: ''
+  });
 
-  const supplierInputRef = useRef(null);
+  const textInput = useRef(null);
 
   useEffect(() => {
-    supplierInputRef.current.focus();
+    if (textInput.current) {
+      textInput.current.focus();
+    }
   }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const isValidPAN = (value) => /^[A-Za-z0-9]{10}$/.test((value || '').trim());
 
   const handleAdd = (e) => {
     e.preventDefault();
 
-    if (
-      !supplierName ||
-      !supplierPan ||
-      !tripId ||
-      !tripDate ||
-      !billingTo
-    ) {
-      Swal.fire({
-        icon: "error",
-        title: "Required Fields Missing",
-        text: "Please fill all mandatory fields",
-      });
-      return;
-    }
-
-    const totalAdvanceAmount =
-      Number(advanceAmount) + Number(otherCharges);
-
-    const balanceAmount =
-      Number(freightAmount) - totalAdvanceAmount;
-
-    const newShipment = {
-      id: logistics.length + 1,
+    const {
       supplierName,
       supplierPan,
       tripId,
@@ -58,50 +47,123 @@ function Add({ logistics, setlogistics, setIsAdding }) {
       loadingDate,
       vehicleNumber,
       vehicleTypeTonnage,
+      freightAmount,
+      advanceAmount,
+      otherCharges
+    } = formData;
+
+    // Validation
+    if (
+      !supplierName || !supplierPan || !tripId || !tripDate || !billingTo ||
+      !fromLocation || !toLocation || !loadingDate || !vehicleNumber ||
+      !vehicleTypeTonnage || !freightAmount || !advanceAmount
+    ) {
+      return Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'All fields are required.',
+        showConfirmButton: true
+      });
+    }
+
+    if (!isValidPAN(supplierPan)) {
+      return Swal.fire({
+        icon: 'error',
+        title: 'Invalid PAN',
+        text: 'PAN must be exactly 10 alphanumeric characters.',
+        showConfirmButton: true
+      });
+    }
+
+    const id = Date.now(); // unique ID
+    const totalAdvanceAmount = Number(advanceAmount) + Number(otherCharges || 0);
+    const balanceAmount = Number(freightAmount) - totalAdvanceAmount;
+
+    const newShipment = {
+      id,
+      supplierName,
+      supplierPan: supplierPan.toUpperCase(),
+      tripId,
+      tripDate,
+      billingTo,
+      fromLocation,
+      toLocation,
+      loadingDate,
+      vehicleNumber,
+      vehicleTypeTonnage,
       freightAmount: Number(freightAmount),
       advanceAmount: Number(advanceAmount),
-      otherCharges: Number(otherCharges),
+      otherCharges: Number(otherCharges || 0),
       totalAdvanceAmount,
-      balanceAmount,
+      balanceAmount
     };
 
-    setlogistics([...logistics, newShipment]);
+    setShipments([...shipments, newShipment]);
+    setIsAdding(false);
 
     Swal.fire({
-      icon: "success",
-      title: "Added!",
-      text: "Shipment details added successfully",
-      timer: 1500,
+      icon: 'success',
+      title: 'Added!',
+      text: `Shipment ${tripId} has been added.`,
       showConfirmButton: false,
+      timer: 1500
     });
-
-    setIsAdding(false);
   };
 
+  const totalAdvanceAmount = Number(formData.advanceAmount) + Number(formData.otherCharges || 0);
+  const balanceAmount = Number(formData.freightAmount) - totalAdvanceAmount;
+
   return (
-    <div className="container">
-      <h2>Add Shipment</h2>
-
+    <div className="small-container">
       <form onSubmit={handleAdd}>
-        <input ref={supplierInputRef} placeholder="Supplier Name" value={supplierName} onChange={(e) => setsupplierName(e.target.value)} />
-        <input placeholder="Supplier PAN" value={supplierPan} onChange={(e) => setsupplierPan(e.target.value)} />
-        <input placeholder="Trip ID" value={tripId} onChange={(e) => settripId(e.target.value)} />
-        <input type="date" value={tripDate} onChange={(e) => settripDate(e.target.value)} />
-        <input placeholder="Billing To" value={billingTo} onChange={(e) => setbillingTo(e.target.value)} />
-        <input placeholder="From Location" value={fromLocation} onChange={(e) => setfromLocation(e.target.value)} />
-        <input placeholder="To Location" value={toLocation} onChange={(e) => settoLocation(e.target.value)} />
-        <input type="date" value={loadingDate} onChange={(e) => setloadingDate(e.target.value)} />
-        <input placeholder="Vehicle Number" value={vehicleNumber} onChange={(e) => setvehicleNumber(e.target.value)} />
-        <input placeholder="Vehicle Type / Tonnage" value={vehicleTypeTonnage} onChange={(e) => setvehicleTypeTonnage(e.target.value)} />
-        <input type="number" placeholder="Freight Amount" value={freightAmount} onChange={(e) => setfreightAmount(e.target.value)} />
-        <input type="number" placeholder="Advance Amount" value={advanceAmount} onChange={(e) => setadvanceAmount(e.target.value)} />
-        <input type="number" placeholder="Other Charges" value={otherCharges} onChange={(e) => setotherCharges(e.target.value)} />
+        <h1>Add Shipment</h1>
 
-        <div className="actions">
-          <button type="submit">Add</button>
-          <button type="button" onClick={() => setIsAdding(false)}>
-            Cancel
-          </button>
+        {/* Existing fields */}
+        {[
+          { label: 'Supplier Name', name: 'supplierName', type: 'text', ref: textInput },
+          { label: 'Supplier PAN', name: 'supplierPan', type: 'text' },
+          { label: 'Trip ID', name: 'tripId', type: 'text' },
+          { label: 'Trip Date', name: 'tripDate', type: 'date' },
+          { label: 'Billing To', name: 'billingTo', type: 'text' },
+          { label: 'From Location', name: 'fromLocation', type: 'text' },
+          { label: 'To Location', name: 'toLocation', type: 'text' },
+          { label: 'Loading Date', name: 'loadingDate', type: 'date' },
+          { label: 'Vehicle Number', name: 'vehicleNumber', type: 'text' },
+          { label: 'Vehicle Type & Tonnage', name: 'vehicleTypeTonnage', type: 'text' },
+          { label: 'Freight Amount', name: 'freightAmount', type: 'number' },
+          { label: 'Advance Amount', name: 'advanceAmount', type: 'number' },
+          { label: 'Other Charges', name: 'otherCharges', type: 'number' }
+        ].map((field, idx) => (
+          <div key={idx}>
+            <label>{field.label}</label>
+            <input
+              type={field.type}
+              name={field.name}
+              ref={field.ref || null}
+              value={formData[field.name]}
+              onChange={handleChange}
+              maxLength={field.name === 'supplierPan' ? 10 : undefined}
+            />
+            <br />
+          </div>
+        ))}
+
+        {/* Auto-calculated fields */}
+        <label>Total Advance Amount</label>
+        <input type="number" value={totalAdvanceAmount} readOnly />
+
+        <label>Balance Amount</label>
+        <input type="number" value={balanceAmount} readOnly />
+
+        <div style={{ marginTop: '30px' }}>
+          <input type="submit" value="Add" />
+          <input
+            type="button"
+            className="muted-button"
+            value="Cancel"
+            style={{ marginLeft: '12px' }}
+            onClick={() => setIsAdding(false)}
+          />
         </div>
       </form>
     </div>
